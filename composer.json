@@ -1,0 +1,24 @@
+{
+    "name": "lyranetwork/payment-offer-ws-api",
+    "description": "SOAP WS API to call Lyra payment offer service in PHP based websites.",
+    "version": "1.0.0",
+    "type": "library",
+    "keywords": ["api", "ws", "soap", "wsdl", "sdk", "php", "payment", "e-commerce", "lyra", "offer"],
+    "license": "GPL-3.0+",
+    "authors": [{
+        "name": "Lyra Network",
+        "homepage": "https://www.lyra-network.com/"
+    }],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "php": ">=5.3.0",
+        "phpunit/phpunit": ">=4.0"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Lyranetwork\\" : "lib/"
+        }
+    }
+}
