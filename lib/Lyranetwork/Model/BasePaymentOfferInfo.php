@@ -19,24 +19,6 @@ Abstract class BasePaymentOfferInfo extends AbstractPaymentOfferInfo
     protected $recipients = null;
 
     /**
-     * @param string $shopId
-     * @param string $ctxMode
-     * @param string $device
-     * @param \DateTime $validity
-     * @param int $amount
-     * @param int $validationMode
-     * @param int $currency
-     * @param string $locale
-     * @param boolean $sendMail
-     * @param string[] $recipients
-     */
-    public function __construct($shopId, $ctxMode, $device, \DateTime $validity, $amount, $validationMode, $currency, $locale, $sendMail, array $recipients)
-    {
-      parent::__construct($shopId, $ctxMode, $device, $validity, $amount, $validationMode, $currency, $locale, $sendMail);
-      $this->recipients = $recipients;
-    }
-
-    /**
      * @return string[]
      */
     public function getRecipients()

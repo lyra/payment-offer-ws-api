@@ -10,8 +10,6 @@
  */
 namespace Lyranetwork\Model;
 
-use DateInterval;
-
 class PaymentOfferEntity extends AbstractPaymentOfferEntity
 {
 
@@ -24,23 +22,6 @@ class PaymentOfferEntity extends AbstractPaymentOfferEntity
      * @var string $expandedData
      */
     protected $expandedData = null;
-
-    /**
-     * @param string $shopId
-     * @param string $ctxMode
-     * @param string $device
-     * @param \DateTime $validity
-     * @param int $amount
-     * @param int $validationMode
-     * @param int $currency
-     * @param string $locale
-     * @param boolean $sendMail
-     * @param string $offerId
-     */
-    public function __construct($shopId, $ctxMode, $device, \DateTime $validity, $amount, $validationMode, $currency, $locale, $sendMail, $offerId)
-    {
-      parent::__construct($shopId, $ctxMode, $device, $validity, $amount, $validationMode, $currency, $locale, $sendMail, $offerId);
-    }
 
     /**
      * @param string $keyTest
@@ -71,11 +52,10 @@ class PaymentOfferEntity extends AbstractPaymentOfferEntity
     }
 
     /**
-     * @param string $key
      * @return string
      */
-    public function sign() {
-        $validity = $this->getValidity()->sub(new DateInterval('P1D'));
+    public function getStringToSign() {
+        $validity = $this->getValidity()->sub(new \DateInterval('P1D'));
         $validitySign = $validity->format('Ymd');
         $sendMail = ($this->getSendMail() === 'true') ? 1 : 0;
 
@@ -83,7 +63,6 @@ class PaymentOfferEntity extends AbstractPaymentOfferEntity
                    '+' .$this->getMessage(). '+' .$this->getRecipient(). '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' .$validitySign. '+' .$sendMail .'+' .$this->getExpandedData().
                    '+' .$this->certificate;
 
-        $signature = sha1($toSign);
-        return $signature;
+        return $toSign;
     }
 }

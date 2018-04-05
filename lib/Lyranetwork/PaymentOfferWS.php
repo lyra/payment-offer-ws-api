@@ -17,7 +17,7 @@ class PaymentOfferWS extends \SoapClient
      * @param string $wsdl The wsdl file to use
      * @param array $options A array of config values
      */
-    public function __construct(array $options = array(), $wsdl = null)
+	public function __construct($wsdl, array $options = array())
     {
         foreach (PaymentOfferWsClassLoader::getClassMap() as $key => $value) {
             if (!isset($options['classmap'][$key])) {
@@ -25,10 +25,6 @@ class PaymentOfferWS extends \SoapClient
             }
         }
         $options = array_merge(array ('features' => 1), $options);
-
-        if (!$wsdl) {
-            $wsdl = 'https://secure.payzen.eu/vads-ws/paymentoffer-v2?wsdl';
-        }
 
         parent::__construct($wsdl, $options);
     }
@@ -39,7 +35,8 @@ class PaymentOfferWS extends \SoapClient
      */
     public function create(\Lyranetwork\Model\PaymentOfferInfo $info)
     {
-    	return $this->__soapCall('create', array($info, $info->sign()));
+        $signature = $this->generateSignature($info->getStringToSign());
+        return $this->__soapCall('create', array($info, $signature));
     }
 
     /**
@@ -48,6 +45,16 @@ class PaymentOfferWS extends \SoapClient
      */
     public function update(\Lyranetwork\Model\PaymentOfferEntity $entities)
     {
-    	return $this->__soapCall('update', array($entities, $entities->sign()));
+        $signature = $this->generateSignature($entities->getStringToSign());
+        return $this->__soapCall('update', array($entities, $signature));
+    }
+
+    /**
+    * @param string $toSign
+    * @return string
+    */
+    public function generateSignature($toSign)
+    {
+        return sha1($toSign);
     }
 }

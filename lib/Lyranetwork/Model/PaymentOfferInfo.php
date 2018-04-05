@@ -10,8 +10,6 @@
  */
 namespace Lyranetwork\Model;
 
-use DateInterval;
-
 class PaymentOfferInfo extends BasePaymentOfferInfo
 {
 
@@ -24,24 +22,6 @@ class PaymentOfferInfo extends BasePaymentOfferInfo
      * @var string $expandedData
      */
     protected $expandedData = null;
-
-
-    /**
-     * @param string $shopId
-     * @param string $ctxMode
-     * @param string $device
-     * @param \DateTime $validity
-     * @param int $amount
-     * @param int $validationMode
-     * @param int $currency
-     * @param string $locale
-     * @param boolean $sendMail
-     * @param string[] $recipients
-     */
-    public function __construct($shopId, $ctxMode, $device, \DateTime $validity, $amount, $validationMode, $currency, $locale, $sendMail, array $recipients)
-    {
-      parent::__construct($shopId, $ctxMode, $device, $validity, $amount, $validationMode, $currency, $locale, $sendMail, $recipients);
-    }
 
     /**
      * @param string $keyTest
@@ -75,17 +55,16 @@ class PaymentOfferInfo extends BasePaymentOfferInfo
     /**
      * @return string
      */
-    public function sign() {
+    public function getStringToSign() {
         $recipients = '[' .implode(', ', $this->getRecipients()). ']';
-        $validity = $this->getValidity()->sub(new DateInterval('P1D'));
+        $validity = $this->getValidity()->sub(new \DateInterval('P1D'));
         $validitySign = $validity->format('Ymd');
         $sendMail = ($this->getSendMail() === 'true') ? 1 : 0;
 
         $toSign = $this->getShopId(). '+' .$this->getReference(). '+' .$this->getCtxMode(). '+' .$this->getAmount(). '+' .$this->getCurrency(). '+' . $this->getLocale().
-                   '+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' . $validitySign. '+'.$sendMail .'+' .$this->getExpandedData().
+                   '+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' . $validitySign. '+' .$sendMail . '+' .$this->getExpandedData().
                    '+' .$this->certificate;
 
-        $signature = sha1($toSign);
-        return $signature;
+        return $toSign;
     }
 }

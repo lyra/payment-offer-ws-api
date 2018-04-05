@@ -79,30 +79,6 @@ abstract class AbstractPaymentOfferInfo
     protected $sendMail = null;
 
     /**
-     * @param string $shopId
-     * @param string $ctxMode
-     * @param string $device
-     * @param \DateTime $validity
-     * @param int $amount
-     * @param int $validationMode
-     * @param int $currency
-     * @param string $locale
-     * @param boolean $sendMail
-     */
-    public function __construct($shopId, $ctxMode, $device, \DateTime $validity, $amount, $validationMode, $currency, $locale, $sendMail)
-    {
-      $this->shopId = $shopId;
-      $this->ctxMode = $ctxMode;
-      $this->device = $device;
-      $this->validity = $validity->format(\DateTime::ATOM);
-      $this->amount = $amount;
-      $this->validationMode = $validationMode;
-      $this->currency = $currency;
-      $this->locale = $locale;
-      $this->sendMail = $sendMail;
-    }
-
-    /**
      * @return string
      */
     public function getShopId()

@@ -28,23 +28,7 @@ abstract class AbstractPaymentOfferEntity extends AbstractPaymentOfferInfo
      */
     protected $paymentURL = null;
 
-    /**
-     * @param string $shopId
-     * @param string $ctxMode
-     * @param string $device
-     * @param \DateTime $validity
-     * @param int $amount
-     * @param int $validationMode
-     * @param int $currency
-     * @param string $locale
-     * @param boolean $sendMail
-     * @param string $offerId
-     */
-    public function __construct($shopId, $ctxMode, $device, \DateTime $validity, $amount, $validationMode, $currency, $locale, $sendMail, $offerId)
-    {
-      parent::__construct($shopId, $ctxMode, $device, $validity, $amount, $validationMode, $currency, $locale, $sendMail);
-      $this->offerId = $offerId;
-    }
+    abstract public function getStringToSign();
 
     /**
      * @return string
