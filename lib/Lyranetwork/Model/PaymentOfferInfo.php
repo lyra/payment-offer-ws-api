@@ -23,6 +23,7 @@ class PaymentOfferInfo extends BasePaymentOfferInfo
      */
     protected $expandedData = null;
 
+
     /**
      * @param string $keyTest
      * @param string $keyProd
@@ -57,12 +58,10 @@ class PaymentOfferInfo extends BasePaymentOfferInfo
      */
     public function getStringToSign() {
         $recipients = '[' .implode(', ', $this->getRecipients()). ']';
-        $validity = $this->getValidity()->sub(new \DateInterval('P1D'));
-        $validitySign = $validity->format('Ymd');
-        $sendMail = ($this->getSendMail() === 'true') ? 1 : 0;
+        $validity = $this->getValidity()->format('Ymd');
 
         $toSign = $this->getShopId(). '+' .$this->getReference(). '+' .$this->getCtxMode(). '+' .$this->getAmount(). '+' .$this->getCurrency(). '+' . $this->getLocale().
-                   '+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' . $validitySign. '+' .$sendMail . '+' .$this->getExpandedData().
+                   '+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' . $validity. '+' .$this->getSendMail(). '+' .$this->getExpandedData().
                    '+' .$this->certificate;
 
         return $toSign;

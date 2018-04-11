@@ -35,7 +35,77 @@ require_once('/path/to/payment-offer-ws-api/init.php');
 Coming soon.
 
 ```php
+try {
+    $shopId = '1234568';
+    $ctxMode = 'TEST';
+    $keyTest = '1111111111111111';
+    $keyProd = '2222222222222222';
+    $device = 'MAIL';
+    $validity = new DateTime('now');
+    $amount = '10000'; 
+    $validationMode = '0';
+    $currency = '978';
+    $locale= 'fr';
+    $sendMail = true;
+    $reference = '001';
+    $message = 'Dear customer, thank you for your order #'. $reference;
+    $subject = 'Thank you for your order';
 
+    // proxy options if any
+    $options = array(
+        'proxy_host' => 'host',
+        'proxy_port' => '3128',
+        'proxy_login' => 'login',
+        'proxy_password' => 'password'
+    );
+    $offerWsApi = new \Lyranetwork\PaymentofferWs($url,$options);
+
+    // example of createPaymentOffer call
+    $createPaymentRequest = new \Lyranetwork\Model\PaymentOfferInfo();
+    $createPaymentRequest->setShopId($shopId);
+    $createPaymentRequest->setCtxMode($ctxMode);
+    $createPaymentRequest->setCertificate($keyTest, $keyProd);
+    $createPaymentRequest->setDevice($device);
+    $createPaymentRequest->setValidity($validity);
+    $createPaymentRequest->setAmount($amount);
+    $createPaymentRequest->setValidationMode($validationMode);
+    $createPaymentRequest->setCurrency($currency);
+    $createPaymentRequest->setLocale($locale);
+    $createPaymentRequest->setSendMail($sendMail);
+    $createPaymentRequest->setRecipients($recipients);
+    $createPaymentRequest->setReference($reference);
+    $createPaymentRequest->setMessage($message);
+    $createPaymentRequest->setSubject($subject);
+
+    $paymentOfferResponse = $offerWsApi->createPaymentOffer($createPaymentRequest);
+    $offerWsApi->checkResult(
+            $paymentOfferResponse, 
+            array('OK', 'NOT_ALLOWED', 'NOT_AUTHORIZED', 'OFFER_NOT_FOUND','BAD_SIGNATURE',
+                  'RECIPIENTS', 'RECIPIENT', 'SUBJECT','MESSAGE', 'CTX_MODE',
+                  'DEVICE', 'VALIDITY_DATE', 'AMOUNT', 'VALIDATION_MODE', 'SYSTEM_FAILURE', 
+                  'TEMPLATE_NOT_FOUND'
+                )
+     );
+
+} catch(\SoapFault $f) {
+    echo 'Soap Exception <pre>'.print_r($f, true).'</pre>';
+
+        // friendly message here 
+} catch(\UnexpectedValueException $e) {
+    echo 'Unexpected Value Exception <pre>'.print_r($e, true).'</pre>';
+
+    if ($e->getCode() === -1) {
+    // manage authentication error here
+    } elseif ($e->getCode() === 1) {
+    // merchant does not subscribe to WS option
+    } else {
+    // manage other unexpected response here
+    }
+} catch (Exception $e) {
+     echo 'Exception <pre>'.print_r($e, true).'</pre>';
+
+    // friendly message here 
+}
 ```
 
 ## License

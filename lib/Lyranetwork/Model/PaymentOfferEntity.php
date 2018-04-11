@@ -23,6 +23,7 @@ class PaymentOfferEntity extends AbstractPaymentOfferEntity
      */
     protected $expandedData = null;
 
+
     /**
      * @param string $keyTest
      * @param string $keyProd
@@ -55,12 +56,10 @@ class PaymentOfferEntity extends AbstractPaymentOfferEntity
      * @return string
      */
     public function getStringToSign() {
-        $validity = $this->getValidity()->sub(new \DateInterval('P1D'));
-        $validitySign = $validity->format('Ymd');
-        $sendMail = ($this->getSendMail() === 'true') ? 1 : 0;
+        $validity = $this->getValidity()->format('Ymd');
 
         $toSign = $this->getShopId(). '+' .$this->getOfferId(). '+' .$this->getReference(). '+' .$this->getCtxMode(). '+' .$this->getAmount(). '+' . $this->getCurrency(). '+' .$this->getLocale().
-                   '+' .$this->getMessage(). '+' .$this->getRecipient(). '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' .$validitySign. '+' .$sendMail .'+' .$this->getExpandedData().
+                   '+' .$this->getMessage(). '+' .$this->getRecipient(). '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' .$validity. '+' .$this->getSendMail(). '+' .$this->getExpandedData().
                    '+' .$this->certificate;
 
         return $toSign;
