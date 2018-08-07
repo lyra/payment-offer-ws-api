@@ -13,48 +13,64 @@ namespace Lyranetwork;
 class PaymentOfferWS extends \SoapClient
 {
 
-    /**
-     * @param string $wsdl The wsdl file to use
-     * @param array $options A array of config values
-     */
+	/**
+	 * @param string $wsdl The wsdl file to use
+	 * @param array $options A array of config values
+	 */
 	public function __construct($wsdl, array $options = array())
-    {
-        foreach (PaymentOfferWsClassLoader::getClassMap() as $key => $value) {
-            if (!isset($options['classmap'][$key])) {
-                $options['classmap'][$key] = $value;
-            }
-        }
-        $options = array_merge(array ('features' => 1), $options);
+	{
+		foreach (PaymentOfferWsClassLoader::getClassMap() as $key => $value) {
+			if (!isset($options['classmap'][$key])) {
+				$options['classmap'][$key] = $value;
+			}
+		}
+		$options = array_merge(array ('features' => 1), $options);
 
-        parent::__construct($wsdl, $options);
-    }
+		parent::__construct($wsdl, $options);
+	}
 
-    /**
-     * @param  \Lyranetwork\Model\PaymentOfferInfo $info
-     * @return  \Lyranetwork\Model\PaymentOfferResponse
-     */
-    public function create(\Lyranetwork\Model\PaymentOfferInfo $info)
-    {
-        $signature = $this->generateSignature($info->getStringToSign());
-        return $this->__soapCall('create', array($info, $signature));
-    }
+	/**
+	 * Check response results (expected response code).
+	 *
+	 * @param \Lyranetwork\Model\PaymentOfferResponse $paymentResponse
+	 * @param array $expectedStatuses
+	 * @throws \UnexpectedValueException
+	 */
+	public function checkResult(\Lyranetwork\Model\PaymentOfferResponse $paymentResponse, array $expectedStatuses = array())
+	{
+		if (! empty($expectedStatuses) && ! in_array($paymentResponse->getReponseCode(), $expectedStatuses)) {
+			throw new \UnexpectedValueException(
+					"Unexpected transaction status returned ({$paymentResponse->getResturnMessage()})."
+			);
+		}
+	}
 
-    /**
-     * @param  \Lyranetwork\Model\PaymentOfferEntity $entities
-     * @return  \Lyranetwork\Model\PaymentOfferResponse
-     */
-    public function update(\Lyranetwork\Model\PaymentOfferEntity $entities)
-    {
-        $signature = $this->generateSignature($entities->getStringToSign());
-        return $this->__soapCall('update', array($entities, $signature));
-    }
+	/**
+	 * @param  \Lyranetwork\Model\PaymentOfferInfo $info
+	 * @return  \Lyranetwork\Model\PaymentOfferResponse
+	 */
+	public function createPaymentOffer(\Lyranetwork\Model\PaymentOfferInfo $info)
+	{
+		$signature = $this->generateSignature($info->getStringToSign());
+		return $this->__soapCall('create', array($info, $signature));
+	}
 
-    /**
-    * @param string $toSign
-    * @return string
-    */
-    public function generateSignature($toSign)
-    {
-        return sha1($toSign);
-    }
+	/**
+	 * @param  \Lyranetwork\Model\PaymentOfferEntity $entities
+	 * @return  \Lyranetwork\Model\PaymentOfferResponse
+	 */
+	public function updatePaymentOffer(\Lyranetwork\Model\PaymentOfferEntity $entities)
+	{
+		$signature = $this->generateSignature($entities->getStringToSign());
+		return $this->__soapCall('update', array($entities, $signature));
+	}
+
+	/**
+	 * @param string $toSign
+	 * @return string
+	 */
+	private function generateSignature($toSign)
+	{
+		return sha1($toSign);
+	}
 }

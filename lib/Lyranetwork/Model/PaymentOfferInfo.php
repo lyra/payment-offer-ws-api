@@ -13,58 +13,58 @@ namespace Lyranetwork\Model;
 class PaymentOfferInfo extends BasePaymentOfferInfo
 {
 
-    /**
-     * @var string $certificate
-     */
-    private $certificate = null;
+	/**
+	 * @var string $certificate
+	 */
+	private $certificate = null;
 
-    /**
-     * @var string $expandedData
-     */
-    protected $expandedData = null;
+	/**
+	 * @var string $expandedData
+	 */
+	protected $expandedData = null;
 
-    /**
-     * @param string $keyTest
-     * @param string $keyProd
-     * @return \Lyranetwork\Model\PaymentOfferInfo
-     */
-    public function setCertificate($keyTest, $keyProd)
-    {
-        $this->certificate = ($this->getCtxMode() === 'PRODUCTION') ? $keyProd : $keyTest;
-        return $this;
-    }
 
-    /**
-     * @return string
-     */
-    public function getExpandedData()
-    {
-      return $this->expandedData;
-    }
+	/**
+	 * @param string $keyTest
+	 * @param string $keyProd
+	 * @return \Lyranetwork\Model\PaymentOfferInfo
+	 */
+	public function setCertificate($keyTest, $keyProd)
+	{
+		$this->certificate = ($this->getCtxMode() === 'PRODUCTION') ? $keyProd : $keyTest;
+		return $this;
+	}
 
-    /**
-     * @param string $expandedData
-     * @return \Lyranetwork\Model\PaymentOfferInfo
-     */
-    public function setExpandedData($expandedData)
-    {
-      $this->expandedData = $expandedData;
-      return $this;
-    }
+	/**
+	 * @return string
+	 */
+	public function getExpandedData()
+	{
+		return $this->expandedData;
+	}
 
-    /**
-     * @return string
-     */
-    public function getStringToSign() {
-        $recipients = '[' .implode(', ', $this->getRecipients()). ']';
-        $validity = $this->getValidity()->sub(new \DateInterval('P1D'));
-        $validitySign = $validity->format('Ymd');
-        $sendMail = ($this->getSendMail() === 'true') ? 1 : 0;
+	/**
+	 * @param string $expandedData
+	 * @return \Lyranetwork\Model\PaymentOfferInfo
+	 */
+	public function setExpandedData($expandedData)
+	{
+		$this->expandedData = $expandedData;
+		return $this;
+	}
 
-        $toSign = $this->getShopId(). '+' .$this->getReference(). '+' .$this->getCtxMode(). '+' .$this->getAmount(). '+' .$this->getCurrency(). '+' . $this->getLocale().
-                   '+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' . $validitySign. '+' .$sendMail . '+' .$this->getExpandedData().
-                   '+' .$this->certificate;
+	/**
+	 * @return string
+	 */
+	public function getStringToSign() {
+		$recipients = '[' .implode(', ', $this->getRecipients()). ']';
+		$validity = $this->getValidity()->format('Ymd');
+		$sendMail = $this->getSendMail() ? '1' : '0';
 
-        return $toSign;
-    }
+		$toSign = $this->getShopId(). '+' .$this->getReference(). '+' .$this->getCtxMode(). '+' .$this->getAmount(). '+' .$this->getCurrency(). '+' . $this->getLocale().
+		'+' .$this->getMessage(). '+' .$recipients. '+' .$this->getSubject(). '+' .$this->getValidationMode(). '+' .$validity. '+' .$sendMail. '+' .$this->getExpandedData().
+		'+' .$this->certificate;
+
+		return $toSign;
+	}
 }
